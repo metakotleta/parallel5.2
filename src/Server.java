@@ -20,7 +20,7 @@ public class Server {
         try {
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.bind(new InetSocketAddress(adress, port));
-            SocketChannel serverSocket= serverSocketChannel.accept();
+            SocketChannel serverSocket = serverSocketChannel.accept();
             ByteBuffer buffer = ByteBuffer.allocate(2 << 10);
             int count;
             String msg;
@@ -29,10 +29,9 @@ public class Server {
                 count = serverSocket.read(buffer);
                 new String(buffer.array(), 0, count, StandardCharsets.UTF_8).chars().
                         filter(c -> (c != 32)).
-                        boxed().
-                        map(c -> Character.toChars(c)).
+                        mapToObj(c -> Character.toChars(c)).
                         forEach(sb::append);
-               serverSocket.write(ByteBuffer.wrap(sb.toString().getBytes(StandardCharsets.UTF_8)));
+                serverSocket.write(ByteBuffer.wrap(sb.toString().getBytes(StandardCharsets.UTF_8)));
                 buffer.clear();
             }
         } catch (IOException e) {
